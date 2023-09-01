@@ -162,3 +162,5 @@ cython_debug/
 # data, lectures
 data/
 lectures/
+
+.DS_Store
