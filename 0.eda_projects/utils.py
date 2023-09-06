@@ -24,3 +24,28 @@ class utils:
     results['date'] = results['Year'] + results['month']
     
     return results
+
+  @staticmethod
+  def get_dataframe_by_period2(dataframe, start_date, end_date, country):
+    masking = dataframe['date'] == start_date
+    start_idx = dataframe[masking].index.values[0]
+    
+    masking = dataframe['date'] == end_date
+    end_idx =  dataframe[masking].index.values[0]
+    
+    # 법무부 제외
+    dataframe = dataframe.drop(['법무부_명수', '법무부_전년대비'], axis=1)
+
+    if country == '*':
+      results = dataframe.loc[start_idx:end_idx]
+      results = dataframe.fillna(0)              
+    else:
+      results = dataframe.loc[start_idx:end_idx, ['Year', 'month', f'{country}_명수']]
+      results[f'{country}_명수'] = results[f'{country}_명수'].fillna(0)
+      # rename
+      results = results.rename({f'{country}_명수':'count'}, axis=1)
+      
+      results['date'] = results['Year'] + results['month']
+      results = results.drop(['Year', 'month'], axis=1)
+
+    return results
